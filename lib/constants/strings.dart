@@ -221,4 +221,6 @@ class MyStrings {
   static String isAutoSize = Locale.isKr() ? '글자크기를 창의 크기에 맞춤' : "Adjust font size to window size";
   static String fontSize = Locale.isKr() ? '글자크기' : "Font size";
   static String fontColor = Locale.isKr() ? '글자색상' : "Font color";
+  static String outline = Locale.isKr() ? '외곽선' : "Outline";
+  static String outlineWidth = Locale.isKr() ? '외곽선 두께' : "Outline Width";
 }

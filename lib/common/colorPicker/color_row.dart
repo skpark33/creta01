@@ -12,15 +12,17 @@ import '../util/textfileds.dart';
 
 Widget myColorPicker(
   BuildContext context,
-  Color color,
-  double opacity, {
+  Color color, {
+  double? opacity,
   double? glassFill,
+  double? outLineWidth,
   required TextEditingController controller,
   required void Function(Color value) favorateColorPick,
   required void Function(Color value) onColorChangedEnd,
   required void Function(Color value) onEditComplete,
   required void Function(double) onGlassChanged,
   required void Function(double) onOpacityChanged,
+  required void Function(double) onOutLineChanged,
 }) {
   return Container(
     padding: EdgeInsets.only(right: 20),
@@ -113,14 +115,25 @@ Widget myColorPicker(
                   max: 30,
                 )
               : Container(),
-
-          OpacitySlider(
-            selectedColor: MyColors.secondaryColor,
-            opacity: opacity,
-            onChange: (value) {
-              onOpacityChanged(value);
-            },
-          ),
+          outLineWidth != null
+              ? doubleSlider(
+                  title: MyStrings.outlineWidth,
+                  value: outLineWidth,
+                  onChanged: (val) => onOutLineChanged(val),
+                  onChangeStart: (val) {},
+                  min: 0,
+                  max: 9,
+                )
+              : Container(),
+          opacity != null
+              ? OpacitySlider(
+                  selectedColor: MyColors.secondaryColor,
+                  opacity: opacity,
+                  onChange: (value) {
+                    onOpacityChanged(value);
+                  },
+                )
+              : Container(),
         ]),
   );
 }

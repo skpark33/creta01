@@ -661,35 +661,46 @@ class WidgetPropertyState extends State<WidgetProperty> with SingleTickerProvide
   // }
 
   Widget _bgColorRow(BuildContext context, ACC acc) {
-    return myColorPicker(context, acc.accModel.bgColor.value, acc.accModel.opacity.value,
-        glassFill: acc.accModel.glassFill.value, controller: colorCon, favorateColorPick: (value) {
-      acc.setBgColor(value);
-    }, onColorChangedEnd: (value) {
-      acc.setBgColor(value);
-      currentUser.setUserColorList(value);
-    }, onEditComplete: (value) {
-      acc.setBgColor(value);
-    }, onGlassChanged: (value) {
-      setState(() {
-        acc.accModel.glassFill.set(value);
-        if (acc.accModel.glassFill.value > 0) {
-          if (acc.accModel.bgColor.value == Colors.transparent) {
-            // 바탕색이 투명일때, 유리질을 선택하면, 바탕색을 힌색으로 잡아준다.
-            acc.accModel.bgColor.set(Colors.white);
+    return myColorPicker(
+      context,
+      acc.accModel.bgColor.value,
+      opacity: acc.accModel.opacity.value,
+      glassFill: acc.accModel.glassFill.value,
+      controller: colorCon,
+      favorateColorPick: (value) {
+        acc.setBgColor(value);
+      },
+      onColorChangedEnd: (value) {
+        acc.setBgColor(value);
+        currentUser.setUserColorList(value);
+      },
+      onEditComplete: (value) {
+        acc.setBgColor(value);
+      },
+      onGlassChanged: (value) {
+        setState(() {
+          acc.accModel.glassFill.set(value);
+          if (acc.accModel.glassFill.value > 0) {
+            if (acc.accModel.bgColor.value == Colors.transparent) {
+              // 바탕색이 투명일때, 유리질을 선택하면, 바탕색을 힌색으로 잡아준다.
+              acc.accModel.bgColor.set(Colors.white);
+            }
+            if (acc.accModel.opacity.value == 1) {
+              // opacity 가 안잡혀 있으면 자동으로 잡아준다.
+              acc.accModel.opacity.set(0.5);
+            }
           }
-          if (acc.accModel.opacity.value == 1) {
-            // opacity 가 안잡혀 있으면 자동으로 잡아준다.
-            acc.accModel.opacity.set(0.5);
-          }
-        }
-      });
-      acc.notify();
-    }, onOpacityChanged: (value) {
-      //logHolder.log('onValueChanged: $value');
-      acc.accModel.opacity.set(value);
-      acc.notify();
-      setState(() {});
-    });
+        });
+        acc.notify();
+      },
+      onOpacityChanged: (value) {
+        //logHolder.log('onValueChanged: $value');
+        acc.accModel.opacity.set(value);
+        acc.notify();
+        setState(() {});
+      },
+      onOutLineChanged: (value) {},
+    );
 
     // return Container(
     //   padding: EdgeInsets.only(right: 20),

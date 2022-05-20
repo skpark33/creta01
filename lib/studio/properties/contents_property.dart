@@ -55,12 +55,20 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
   TextEditingController textCon = TextEditingController();
 
   TextEditingController colorCon = TextEditingController();
+  TextEditingController outlineCon = TextEditingController();
 
   final List<ExapandableModel> _modelList = [];
 
-  ExapandableModel bgColorModel = ExapandableModel(
+  ExapandableModel fontColorModel = ExapandableModel(
     //title: '${MyStrings.bgColor}/${MyStrings.glass}/${MyStrings.opacity}',
-    title: '${MyStrings.bgColor}/${MyStrings.opacity}',
+    title: '${MyStrings.fontColor}/${MyStrings.opacity}',
+    height: 480,
+    width: 240,
+  );
+
+  ExapandableModel outlineModel = ExapandableModel(
+    //title: '${MyStrings.bgColor}/${MyStrings.glass}/${MyStrings.opacity}',
+    title: MyStrings.outline,
     height: 480,
     width: 240,
   );
@@ -76,7 +84,8 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
   @override
   void initState() {
     super.initState();
-    _modelList.add(bgColorModel);
+    _modelList.add(fontColorModel);
+    _modelList.add(outlineModel);
   }
 
   Future<ContentsModel> waitContents(SelectedModel selectedModel) async {
@@ -164,7 +173,11 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                   ),
                 );
                 // Text Font Color
+                textPropList.add(divider());
                 textPropList.add(fontColorExpander(model));
+                textPropList.add(divider());
+                textPropList.add(outlineExpander(model));
+                textPropList.add(divider());
               }
 
               return ListView(controller: _scrollController, children: [
@@ -404,12 +417,12 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
   }
 
   Widget fontColorExpander(ContentsModel model) {
-    return bgColorModel.expandArea(
+    return fontColorModel.expandArea(
         child: fontColorRow(context, model),
         setStateFunction: () {
           setState(() {
-            unexpendAll(bgColorModel.title);
-            bgColorModel.toggleSelected();
+            unexpendAll(fontColorModel.title);
+            fontColorModel.toggleSelected();
           });
         },
         titleSize: 150,
@@ -438,7 +451,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
       child: myColorPicker(
         context,
         model.fontColor.value,
-        model.opacity.value,
+        opacity: model.opacity.value,
         controller: colorCon,
         //glassFill: model.glassFill.value,
         favorateColorPick: (value) {
@@ -460,25 +473,83 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
           });
           invalidateContents();
         },
-        onGlassChanged: (value) {
-          setState(() {
-            model.glassFill.set(value);
-            if (model.glassFill.value > 0) {
-              if (model.fontColor.value == Colors.transparent) {
-                // 바탕색이 투명일때, 유리질을 선택하면, 바탕색을 힌색으로 잡아준다.
-                model.fontColor.set(Colors.white);
-              }
-              if (model.opacity.value == 1) {
-                // opacity 가 안잡혀 있으면 자동으로 잡아준다.
-                model.opacity.set(0.5);
-              }
-            }
-          });
-          invalidateContents();
-        },
+        onGlassChanged: (value) {},
         onOpacityChanged: (value) {
           setState(() {
             model.opacity.set(value);
+          });
+          invalidateContents();
+        },
+        onOutLineChanged: (value) {},
+      ),
+    );
+  }
+
+  Widget outlineExpander(ContentsModel model) {
+    return outlineModel.expandArea(
+        child: outlineRow(context, model),
+        setStateFunction: () {
+          setState(() {
+            unexpendAll(outlineModel.title);
+            outlineModel.toggleSelected();
+          });
+        },
+        titleSize: 150,
+        titleLineWidget: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            glassIcon(
+              false, //model.glassFill.value > 0,
+              model.outLineColor.value,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              '${model.outLineWidth.value.round()}',
+            ),
+            SizedBox(
+              width: 28,
+            ),
+          ],
+        ));
+  }
+
+  Widget outlineRow(BuildContext context, ContentsModel model) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 22,
+      ),
+      child: myColorPicker(
+        context,
+        model.outLineColor.value,
+        outLineWidth: model.outLineWidth.value,
+        controller: outlineCon,
+        //glassFill: model.glassFill.value,
+        favorateColorPick: (value) {
+          setState(() {
+            model.outLineColor.set(value);
+          });
+          invalidateContents();
+        },
+        onColorChangedEnd: (value) {
+          setState(() {
+            model.outLineColor.set(value);
+          });
+          invalidateContents();
+          currentUser.setUserColorList(value);
+        },
+        onEditComplete: (value) {
+          setState(() {
+            model.outLineColor.set(value);
+          });
+          invalidateContents();
+        },
+        onGlassChanged: (value) {},
+        onOpacityChanged: (value) {},
+        onOutLineChanged: (value) {
+          setState(() {
+            model.outLineWidth.set(value);
           });
           invalidateContents();
         },

@@ -176,11 +176,28 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
         width: realSize.width,
         height: realSize.height,
         color: Colors.transparent,
-        child: Text(uri,
-            style: DefaultTextStyle.of(context).style.copyWith(
-                fontFamily: widget.model!.font.value,
-                color: widget.model!.fontColor.value.withOpacity(widget.model!.opacity.value),
-                fontSize: fontSize)),
+        child: Stack(
+          children: [
+            widget.model!.outLineWidth.value > 0
+                ? Text(
+                    uri,
+                    style: DefaultTextStyle.of(context).style.copyWith(
+                          fontFamily: widget.model!.font.value,
+                          fontSize: fontSize,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = widget.model!.outLineWidth.value
+                            ..color = widget.model!.outLineColor.value,
+                        ),
+                  )
+                : Container(),
+            Text(uri,
+                style: DefaultTextStyle.of(context).style.copyWith(
+                    fontFamily: widget.model!.font.value,
+                    color: widget.model!.fontColor.value.withOpacity(widget.model!.opacity.value),
+                    fontSize: fontSize)),
+          ],
+        ),
       ),
     );
   }
