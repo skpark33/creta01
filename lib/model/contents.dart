@@ -40,7 +40,7 @@ class ContentsModel extends AbsModel {
   late UndoAble<Color> fontColor;
   late UndoAble<Color> shadowColor;
   late UndoAble<double> shadowBlur;
-  late UndoAble<Offset> shadowOffset;
+  late UndoAble<double> shadowIntensity; //opactity 0..1 1에 가까울수록 진해진다.
   late UndoAble<double> outLineWidth;
   late UndoAble<Color> outLineColor;
   late UndoAble<bool> isItalic;
@@ -73,7 +73,7 @@ class ContentsModel extends AbsModel {
     fontColor = UndoAble<Color>(Colors.black, mid);
     shadowColor = UndoAble<Color>(Colors.transparent, mid);
     shadowBlur = UndoAble<double>(0, mid);
-    shadowOffset = UndoAble<Offset>(Offset.zero, mid);
+    shadowIntensity = UndoAble<double>(0.5, mid);
     outLineWidth = UndoAble<double>(0, mid);
     outLineColor = UndoAble<Color>(Colors.transparent, mid);
     isItalic = UndoAble<bool>(false, mid);
@@ -113,7 +113,7 @@ class ContentsModel extends AbsModel {
     fontColor = UndoAble<Color>(src.fontColor.value, mid);
     shadowColor = UndoAble<Color>(src.shadowColor.value, mid);
     shadowBlur = UndoAble<double>(src.shadowBlur.value, mid);
-    shadowOffset = UndoAble<Offset>(src.shadowOffset.value, mid);
+    shadowIntensity = UndoAble<double>(src.shadowIntensity.value, mid);
     outLineWidth = UndoAble<double>(src.outLineWidth.value, mid);
     outLineColor = UndoAble<Color>(src.outLineColor.value, mid);
     isItalic = UndoAble<bool>(src.isItalic.value, mid);
@@ -145,7 +145,7 @@ class ContentsModel extends AbsModel {
     fontColor = UndoAble<Color>(Colors.black, srcMid);
     shadowColor = UndoAble<Color>(Colors.transparent, srcMid);
     shadowBlur = UndoAble<double>(0, srcMid);
-    shadowOffset = UndoAble<Offset>(Offset.zero, srcMid);
+    shadowIntensity = UndoAble<double>(0.5, srcMid);
     outLineWidth = UndoAble<double>(0, srcMid);
     outLineColor = UndoAble<Color>(Colors.transparent, srcMid);
     isItalic = UndoAble<bool>(false, srcMid);
@@ -219,7 +219,7 @@ class ContentsModel extends AbsModel {
     shadowColor.set(stringToColor(map["shadowColor"], defaultColor: Colors.transparent),
         save: false);
     shadowBlur.set(map["shadowBlur"] ?? 0, save: false);
-    shadowOffset.set(Offset(map["shadowOffset_dx"] ?? 0, map["shadowOffset_dy"] ?? 0), save: false);
+    shadowIntensity.set(map["shadowIntensity"] ?? 0.5, save: false);
     outLineWidth.set(map["outLineWidth"] ?? 0, save: false);
     outLineColor.set(stringToColor(map["outLineColor"], defaultColor: Colors.transparent),
         save: false);
@@ -261,8 +261,7 @@ class ContentsModel extends AbsModel {
         "fontColor": fontColor.value.toString(),
         "shadowColor": shadowColor.value.toString(),
         "shadowBlur": shadowBlur.value,
-        "shadowOffset_dx": shadowOffset.value.dx,
-        "shadowOffset_dy": shadowOffset.value.dy,
+        "shadowIntensity": shadowIntensity.value,
         "outLineWidth": outLineWidth.value,
         "outLineColor": outLineColor.value.toString(),
         "isItalic": isItalic.value,

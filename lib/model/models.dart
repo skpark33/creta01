@@ -108,6 +108,12 @@ abstract class AbsModel {
     return _isDirty;
   }
 
+  bool isChanged(AbsModel newModel) {
+    Map<String, dynamic> newMap = newModel.serialize();
+    Map<String, dynamic> oldMap = serialize();
+    return !mapEquals(newMap, oldMap);
+  }
+
   void save() {
     // 객체가 Create 된것은 모두 Save 대상이다.
     if (saveManagerHolder != null) {

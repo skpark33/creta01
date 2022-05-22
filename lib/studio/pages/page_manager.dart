@@ -53,7 +53,9 @@ class PageManager extends ChangeNotifier {
   Future<void> setAsContents() async {
     setPrevPropertyType(_propertyType);
     _propertyType = PropertyType.contents;
-    notifyListeners();
+    if (_prevPropertyType != _propertyType) {
+      notifyListeners();
+    }
   }
 
   Future<void> setAsBook() async {

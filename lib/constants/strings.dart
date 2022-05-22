@@ -222,5 +222,9 @@ class MyStrings {
   static String fontSize = Locale.isKr() ? '글자크기' : "Font size";
   static String fontColor = Locale.isKr() ? '글자색상' : "Font color";
   static String outline = Locale.isKr() ? '외곽선' : "Outline";
-  static String outlineWidth = Locale.isKr() ? '외곽선 두께' : "Outline Width";
+  static String outlineWidth = Locale.isKr() ? '두께' : "Outline Width";
+
+  static String shadow = Locale.isKr() ? '그림자' : "Shadow";
+  static String shadowBlur = Locale.isKr() ? '그림자 두께' : "Shadow Width";
+  static String shadowIntensity = Locale.isKr() ? '그림자 강도' : "Shadow Intensity";
 }

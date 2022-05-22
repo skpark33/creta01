@@ -406,7 +406,7 @@ class ACC {
   }
 
   Widget buildAccChild(BuildContext context, double mouseMargin, Size realSize, Size marginSize) {
-    logHolder.log("buildAccChild ${accModel.glassFill.value}", level: 6);
+    //logHolder.log("buildAccChild ${accModel.glassFill.value}", level: 6);
     return Padding(
       padding: EdgeInsets.all(mouseMargin),
       child: Transform.rotate(
@@ -428,7 +428,8 @@ class ACC {
                 lightSource: accModel.lightSource.value,
                 depth: accModel.depth.value,
                 //bgColor: accModel.bgColor.value.withOpacity(accModel.opacity.value),
-                bgColor: accModel.glassFill.value > 0 || accModel.accType == ACCType.text
+                bgColor: (accModel.glassFill.value > 0 || accModel.accType == ACCType.text) &&
+                        accModel.bgColor.value != Colors.transparent
                     ? accModel.bgColor.value.withOpacity(accModel.opacity.value)
                     : accModel.bgColor.value,
                 onPressed: () {
@@ -565,8 +566,10 @@ class ACC {
     } else {
       accChild.playManager.getCurrentModel().then((model) {
         if (model != null) {
-          logHolder.log('Its contents click!!! ${model.mid}', level: 5);
-          if (selectedModelHolder != null) selectedModelHolder!.setModel(model);
+          logHolder.log('Its contents click!!! ${model.mid}', level: 6);
+          if (selectedModelHolder != null) {
+            selectedModelHolder!.setModel(model);
+          }
           if (pageManagerHolder != null) pageManagerHolder!.setAsContents();
           if (accManagerHolder != null) accManagerHolder!.setCurrentMid(accMid, setAsAcc: false);
         } else {

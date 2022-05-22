@@ -56,6 +56,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
 
   TextEditingController colorCon = TextEditingController();
   TextEditingController outlineCon = TextEditingController();
+  TextEditingController shadowCon = TextEditingController();
 
   final List<ExapandableModel> _modelList = [];
 
@@ -73,6 +74,13 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
     width: 240,
   );
 
+  ExapandableModel shadowModel = ExapandableModel(
+    //title: '${MyStrings.bgColor}/${MyStrings.glass}/${MyStrings.opacity}',
+    title: MyStrings.shadow,
+    height: 480,
+    width: 240,
+  );
+
   void unexpendAll(String expandModelName) {
     for (ExapandableModel model in _modelList) {
       if (expandModelName != model.title) {
@@ -86,6 +94,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
     super.initState();
     _modelList.add(fontColorModel);
     _modelList.add(outlineModel);
+    _modelList.add(shadowModel);
   }
 
   Future<ContentsModel> waitContents(SelectedModel selectedModel) async {
@@ -98,7 +107,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
     return retval;
   }
 
-  void invalidateContents() {
+  void _invalidateContents() {
     if (accManagerHolder != null && accManagerHolder!.getCurrentACC() != null) {
       accManagerHolder!.getCurrentACC()!.accChild.playManager.invalidate();
     }
@@ -149,7 +158,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                   child: myCheckBox(MyStrings.isAutoSize, model.isAutoSize.value, () {
                     setState(() {
                       model.isAutoSize.set(!model.isAutoSize.value);
-                      invalidateContents();
+                      _invalidateContents();
                     });
                   }, 8, 2, 0, 2),
                 ));
@@ -163,7 +172,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                       onChanged: (val) {
                         setState(() {
                           model.fontSize.set(val);
-                          invalidateContents();
+                          _invalidateContents();
                         });
                       },
                       onChangeStart: (val) {},
@@ -177,6 +186,8 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                 textPropList.add(fontColorExpander(model));
                 textPropList.add(divider());
                 textPropList.add(outlineExpander(model));
+                textPropList.add(divider());
+                textPropList.add(shadowExpander(model));
                 textPropList.add(divider());
               }
 
@@ -357,7 +368,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                 logHolder.log("textval = ${textCon.text}");
                 model.remoteUrl = textCon.text;
                 model.save();
-                invalidateContents();
+                _invalidateContents();
               },
             ),
           ),
@@ -366,7 +377,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
               logHolder.log("textval = ${textCon.text}");
               model.remoteUrl = textCon.text;
               model.save();
-              invalidateContents();
+              _invalidateContents();
             },
           ),
         ],
@@ -394,7 +405,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
               String font = getFontFamily(newValue!);
               logHolder.log("fontFamily=$font", level: 6);
               model.font.set(font);
-              invalidateContents();
+              _invalidateContents();
             });
           },
           items: <String>[
@@ -458,27 +469,27 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
           setState(() {
             model.fontColor.set(value);
           });
-          invalidateContents();
+          _invalidateContents();
         },
         onColorChangedEnd: (value) {
           setState(() {
             model.fontColor.set(value);
           });
-          invalidateContents();
+          _invalidateContents();
           currentUser.setUserColorList(value);
         },
         onEditComplete: (value) {
           setState(() {
             model.fontColor.set(value);
           });
-          invalidateContents();
+          _invalidateContents();
         },
         onGlassChanged: (value) {},
         onOpacityChanged: (value) {
           setState(() {
             model.opacity.set(value);
           });
-          invalidateContents();
+          _invalidateContents();
         },
         onOutLineChanged: (value) {},
       ),
@@ -530,20 +541,20 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
           setState(() {
             model.outLineColor.set(value);
           });
-          invalidateContents();
+          _invalidateContents();
         },
         onColorChangedEnd: (value) {
           setState(() {
             model.outLineColor.set(value);
           });
-          invalidateContents();
+          _invalidateContents();
           currentUser.setUserColorList(value);
         },
         onEditComplete: (value) {
           setState(() {
             model.outLineColor.set(value);
           });
-          invalidateContents();
+          _invalidateContents();
         },
         onGlassChanged: (value) {},
         onOpacityChanged: (value) {},
@@ -551,7 +562,85 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
           setState(() {
             model.outLineWidth.set(value);
           });
-          invalidateContents();
+          _invalidateContents();
+        },
+      ),
+    );
+  }
+
+  Widget shadowExpander(ContentsModel model) {
+    return shadowModel.expandArea(
+        child: shadowRow(context, model),
+        setStateFunction: () {
+          setState(() {
+            unexpendAll(shadowModel.title);
+            shadowModel.toggleSelected();
+          });
+        },
+        titleSize: 150,
+        titleLineWidget: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            glassIcon(
+              false, //model.glassFill.value > 0,
+              model.shadowColor.value,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              '${model.shadowBlur.value.round()}',
+            ),
+            SizedBox(
+              width: 28,
+            ),
+          ],
+        ));
+  }
+
+  Widget shadowRow(BuildContext context, ContentsModel model) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 22,
+      ),
+      child: myColorPicker(
+        context,
+        model.shadowColor.value,
+        outLineWidth: model.shadowBlur.value,
+        opacity: model.shadowIntensity.value,
+        controller: shadowCon,
+        //glassFill: model.glassFill.value,
+        favorateColorPick: (value) {
+          setState(() {
+            model.shadowColor.set(value);
+          });
+          _invalidateContents();
+        },
+        onColorChangedEnd: (value) {
+          setState(() {
+            model.shadowColor.set(value);
+          });
+          _invalidateContents();
+          currentUser.setUserColorList(value);
+        },
+        onEditComplete: (value) {
+          setState(() {
+            model.shadowColor.set(value);
+          });
+          _invalidateContents();
+        },
+        onGlassChanged: (value) {},
+        onOpacityChanged: (value) {
+          setState(() {
+            model.shadowIntensity.set(value);
+          });
+          _invalidateContents();
+        },
+        onOutLineChanged: (value) {
+          setState(() {
+            model.shadowBlur.set(value);
+          });
+          _invalidateContents();
         },
       ),
     );

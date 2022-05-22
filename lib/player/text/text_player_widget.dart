@@ -2,7 +2,7 @@
 // ignore_for_file: prefer_final_fields
 
 import 'dart:math';
-
+import 'dart:ui' as ui;
 import 'package:provider/provider.dart';
 
 import 'package:creta01/book_manager.dart';
@@ -164,9 +164,14 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
       double fontRatio = sqrt(realSize.width * realSize.height) / sqrt(idealWidth * idealHeight);
       fontSize = fontSize * fontRatio;
 
-      logHolder.log("font = ${widget.model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
-          level: 6);
+      //logHolder.log("font = ${widget.model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
+      //    level: 6);
     }
+
+    TextStyle style = DefaultTextStyle.of(context).style.copyWith(
+        fontFamily: widget.model!.font.value,
+        color: widget.model!.fontColor.value.withOpacity(widget.model!.opacity.value),
+        fontSize: fontSize);
 
     return Center(
       child: Container(
@@ -176,28 +181,61 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
         width: realSize.width,
         height: realSize.height,
         color: Colors.transparent,
-        child: Stack(
-          children: [
-            widget.model!.outLineWidth.value > 0
-                ? Text(
-                    uri,
-                    style: DefaultTextStyle.of(context).style.copyWith(
-                          fontFamily: widget.model!.font.value,
-                          fontSize: fontSize,
-                          foreground: Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = widget.model!.outLineWidth.value
-                            ..color = widget.model!.outLineColor.value,
-                        ),
-                  )
-                : Container(),
-            Text(uri,
+        child: widget.model!.shadowBlur.value > 0
+            ? shadowText(
+                outLineText(uri, style, fontSize),
+                uri,
+                style,
+                widget.model!.shadowColor.value,
+                widget.model!.shadowBlur.value,
+                widget.model!.shadowIntensity.value)
+            : outLineText(uri, style, fontSize),
+      ),
+    );
+  }
+
+  Widget outLineText(String text, TextStyle style, double fontSize) {
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: [
+        widget.model!.outLineWidth.value > 0
+            ? Text(
+                text,
                 style: DefaultTextStyle.of(context).style.copyWith(
-                    fontFamily: widget.model!.font.value,
-                    color: widget.model!.fontColor.value.withOpacity(widget.model!.opacity.value),
-                    fontSize: fontSize)),
-          ],
-        ),
+                      fontFamily: widget.model!.font.value,
+                      fontSize: fontSize,
+                      foreground: Paint()
+                        ..style = PaintingStyle.stroke
+                        ..strokeWidth = widget.model!.outLineWidth.value
+                        ..color = widget.model!.outLineColor.value,
+                    ),
+              )
+            : Container(),
+        Text(text, style: style),
+      ],
+    );
+  }
+
+  Widget shadowText(Widget child, String text, TextStyle style, Color shadowColor, double blur,
+      double intensity) {
+    logHolder.log('shadowText $blur', level: 6);
+    return ClipRect(
+      child: Stack(
+        alignment: AlignmentDirectional.center,
+        children: [
+          Positioned(
+            top: blur,
+            left: blur,
+            child: Text(
+              text,
+              style: style.copyWith(color: shadowColor.withOpacity(intensity)),
+            ),
+          ),
+          BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+            child: child,
+          ),
+        ],
       ),
     );
   }

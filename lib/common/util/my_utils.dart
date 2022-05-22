@@ -161,7 +161,7 @@ Widget frostedEdged({required Widget child, double radius = 15.0, double sigma =
 }
 
 Widget glassMorphic({required double glass, required Widget child, double radius = 0}) {
-  logHolder.log("glassMorphic $glass", level: 6);
+  //logHolder.log("glassMorphic $glass", level: 6);
   return glass > 0
       ? ClipRRect(
           borderRadius: BorderRadius.circular(radius),
