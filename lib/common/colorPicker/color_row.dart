@@ -214,10 +214,10 @@ Widget favorateColors(
   );
 }
 
-MyColorIndicator glassIcon(bool isSelected, Color bg) {
+MyColorIndicator glassIcon(bool isSelected, Color bg, {required void Function() onClicked}) {
   return MyColorIndicator(
       color: bg == Color(0x00000000) ? Color(0xFFFFFFFF) : bg,
-      onSelect: () {},
+      onSelect: onClicked,
       isSelected: true, //acc.glass.value,
       width: 24,
       height: 24,
@@ -225,5 +225,5 @@ MyColorIndicator glassIcon(bool isSelected, Color bg) {
       hasBorder: true,
       borderColor: bg == Color(0x00000000) ? Colors.black : MyColors.primaryColor,
       elevation: 5,
-      selectedIcon: isSelected ? Icons.blur_on_rounded : Icons.check);
+      selectedIcon: isSelected ? Icons.check : Icons.close);
 }

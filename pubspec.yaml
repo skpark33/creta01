@@ -78,6 +78,7 @@ dependencies:
   video_player_platform_interface: ^5.1.2
   crypto: ^3.0.2
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

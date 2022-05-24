@@ -4,6 +4,7 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:provider/provider.dart';
+//import 'package:text_scroll/text_scroll.dart';
 
 import 'package:creta01/book_manager.dart';
 import 'package:creta01/common/notifiers/notifiers.dart';
@@ -171,7 +172,10 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
     TextStyle style = DefaultTextStyle.of(context).style.copyWith(
         fontFamily: widget.model!.font.value,
         color: widget.model!.fontColor.value.withOpacity(widget.model!.opacity.value),
-        fontSize: fontSize);
+        fontSize: fontSize,
+        decoration: getTextDecoration(widget.model!.line.value),
+        fontWeight: widget.model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+        fontStyle: widget.model!.isItalic.value ? FontStyle.italic : FontStyle.normal);
 
     return Center(
       child: Container(
@@ -198,20 +202,36 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
-        widget.model!.outLineWidth.value > 0
-            ? Text(
-                text,
-                style: DefaultTextStyle.of(context).style.copyWith(
-                      fontFamily: widget.model!.font.value,
-                      fontSize: fontSize,
+        widget.model!.aniType.value != AnimeType.none
+            ? animationText(text, style)
+            : widget.model!.outLineWidth.value > 0
+                ? Text(
+                    text,
+                    textAlign: widget.model!.align.value,
+                    style: style.copyWith(
                       foreground: Paint()
                         ..style = PaintingStyle.stroke
                         ..strokeWidth = widget.model!.outLineWidth.value
                         ..color = widget.model!.outLineColor.value,
                     ),
-              )
-            : Container(),
-        Text(text, style: style),
+                    // DefaultTextStyle.of(context).style.copyWith(
+                    //       fontFamily: widget.model!.font.value,
+                    //       fontSize: fontSize,
+                    //       foreground: Paint()
+                    //         ..style = PaintingStyle.stroke
+                    //         ..strokeWidth = widget.model!.outLineWidth.value
+                    //         ..color = widget.model!.outLineColor.value,
+                    //     ),
+                  )
+                // style: style.copyWith(
+                //   foreground: Paint()
+                //     ..style = PaintingStyle.stroke
+                //     ..strokeWidth = widget.model!.outLineWidth.value
+                //     ..color = widget.model!.outLineColor.value,
+                // ),
+                //)
+                : Container(),
+        Text(text, textAlign: widget.model!.align.value, style: style),
       ],
     );
   }
@@ -223,14 +243,16 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
       child: Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          Positioned(
-            top: blur,
-            left: blur,
-            child: Text(
-              text,
-              style: style.copyWith(color: shadowColor.withOpacity(intensity)),
-            ),
+          //Positioned(
+          //top: blur,
+          //left: blur,
+          //child:
+          Text(
+            text,
+            textAlign: widget.model!.align.value,
+            style: style.copyWith(color: shadowColor.withOpacity(intensity)),
           ),
+          //),
           BackdropFilter(
             filter: ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
             child: child,
@@ -238,5 +260,27 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
         ],
       ),
     );
+  }
+
+  Widget animationText(String text, TextStyle style) {
+    switch (widget.model!.aniType.value) {
+      case TextAniType.marquee:
+        {
+          return Container();
+          // return TextScroll(
+          //   text,
+          //   mode: TextScrollMode.bouncing,
+          //   numberOfReps: 200,
+          //   delayBefore: const Duration(milliseconds: 2000),
+          //   pauseBetween: const Duration(milliseconds: 1000),
+          //   velocity: const Velocity(pixelsPerSecond: Offset(100, 0)),
+          //   style: style,
+          //   textAlign: TextAlign.right,
+          //   selectable: true,
+          // );
+        }
+      default:
+        return Container();
+    }
   }
 }

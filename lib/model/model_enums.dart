@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import '../constants/strings.dart';
 
 enum UserType {
@@ -454,6 +456,45 @@ TextLine intToTextLine(int t) {
   return TextLine.none;
 }
 
+TextDecoration getTextDecoration(TextLine value) {
+  switch (value) {
+    case TextLine.none:
+      return TextDecoration.none;
+    case TextLine.underline:
+      return TextDecoration.underline;
+    case TextLine.overline:
+      return TextDecoration.overline;
+    case TextLine.lineThrough:
+      return TextDecoration.lineThrough;
+  }
+}
+
+String textDecorationToString(TextLine value) {
+  switch (value) {
+    case TextLine.none:
+      return MyStrings.none;
+    case TextLine.underline:
+      return MyStrings.underline;
+    case TextLine.overline:
+      return MyStrings.overline;
+    case TextLine.lineThrough:
+      return MyStrings.lineThrough;
+  }
+}
+
+TextLine stringToTextDecoration(String value) {
+  if (value == MyStrings.underline) {
+    return TextLine.underline;
+  }
+  if (value == MyStrings.overline) {
+    return TextLine.overline;
+  }
+  if (value == MyStrings.lineThrough) {
+    return TextLine.lineThrough;
+  }
+  return TextLine.none;
+}
+
 enum TextAniType {
   none,
   marquee,
@@ -523,63 +564,79 @@ TextAniType intToTextAniType(int t) {
   return TextAniType.none;
 }
 
-enum AlignType {
-  topLeft,
-  topCenter,
-  topRight,
-  centerLeft,
-  center,
-  centerRight,
-  bottomLeft,
-  bottomCenter,
-  bottomRight,
-}
-
-int alignTypeToInt(AlignType value) {
+String textAniTypeToString(TextAniType value) {
   switch (value) {
-    case AlignType.topLeft:
-      return 0;
-    case AlignType.topCenter:
-      return 1;
-    case AlignType.topRight:
-      return 2;
-    case AlignType.centerLeft:
-      return 3;
-    case AlignType.center:
-      return 4;
-    case AlignType.centerRight:
-      return 5;
-    case AlignType.bottomLeft:
-      return 6;
-    case AlignType.bottomCenter:
-      return 7;
-    case AlignType.bottomRight:
-      return 8;
+    case TextAniType.none:
+      return "none";
+    case TextAniType.marquee:
+      return "marquee";
+    case TextAniType.rotate:
+      return "rotate";
+    case TextAniType.fade:
+      return "fade";
+    case TextAniType.typer:
+      return "typer";
+    case TextAniType.typewriter:
+      return "typewriter";
+    case TextAniType.scale:
+      return "scale";
+    case TextAniType.colorize:
+      return "colorize";
+    case TextAniType.textLiquidFill:
+      return "textLiquidFill";
+    case TextAniType.wavy:
+      return "wavy";
+    case TextAniType.flicker:
+      return "flicker";
   }
 }
 
-AlignType intToAlignType(int t) {
+// enum TextAlign {
+//   topLeft,
+//   topCenter,
+//   topRight,
+//   centerLeft,
+//   center,
+//   centerRight,
+//   bottomLeft,
+//   bottomCenter,
+//   bottomRight,
+// }
+
+int textAlignToInt(TextAlign value) {
+  switch (value) {
+    case TextAlign.left:
+      return 0;
+    case TextAlign.right:
+      return 1;
+    case TextAlign.center:
+      return 2;
+    case TextAlign.justify:
+      return 3;
+    case TextAlign.start:
+      return 4;
+    case TextAlign.end:
+      return 5;
+  }
+}
+
+TextAlign intToTextAlign(int t) {
   switch (t) {
     case 0:
-      return AlignType.topLeft;
+      return TextAlign.left;
     case 1:
-      return AlignType.topCenter;
+      return TextAlign.right;
     case 2:
-      return AlignType.topRight;
+      return TextAlign.center;
     case 3:
-      return AlignType.centerLeft;
+      return TextAlign.justify;
     case 4:
-      return AlignType.center;
+      return TextAlign.start;
     case 5:
-      return AlignType.centerRight;
+      return TextAlign.end;
     case 6:
-      return AlignType.bottomLeft;
-    case 7:
-      return AlignType.bottomCenter;
-    case 8:
-      return AlignType.bottomRight;
   }
-  return AlignType.center;
+  return TextAlign.center;
 }
 
 String getFontName(String font) {

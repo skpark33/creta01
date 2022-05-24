@@ -58,6 +58,11 @@ class ACC {
   Offset _prevOffset = Offset.zero;
   Size _prevSize = Size.zero;
 
+  Color prevBgColor = Colors.transparent;
+  double prevGlassFill = 0;
+  double prevOpacity = 1;
+  Color prevBorderColor = Colors.transparent;
+
   ACC({required this.page, required this.accChild, required int idx}) {
     accModel = ACCProperty(type: ModelType.acc, parent: page!.mid);
     if (accModel.containerSize.value.width == 0 && accModel.containerSize.value.height == 0) {

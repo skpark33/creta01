@@ -131,7 +131,8 @@ Widget buildSwitches(String title, bool value, void Function(bool) onChanged) {
 }
 
 Widget myCheckBox(String title, bool value, void Function() onPressed, double left, double top,
-    double right, double bottom) {
+    double right, double bottom,
+    {bool isBold = false, bool isItalic = false, TextDecoration line = TextDecoration.none}) {
   return Row(
     children: [
       IconButton(
@@ -148,7 +149,11 @@ Widget myCheckBox(String title, bool value, void Function() onPressed, double le
       ),
       Text(
         title,
-        style: MyTextStyles.subtitle2,
+        style: MyTextStyles.subtitle2.copyWith(
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+          decoration: line,
+        ),
       ),
     ],
   );

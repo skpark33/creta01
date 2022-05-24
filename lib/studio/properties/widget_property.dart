@@ -121,7 +121,6 @@ class WidgetProperty extends PropertySelector {
 
 class WidgetPropertyState extends State<WidgetProperty> with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController(initialScrollOffset: 0.0);
-  Color _prevBorderColor = Colors.transparent;
 
   late AnimationController _aniIconController;
 
@@ -264,12 +263,34 @@ class WidgetPropertyState extends State<WidgetProperty> with SingleTickerProvide
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     glassIcon(
-                      acc.accModel.glassFill.value > 0,
+                      acc.accModel.bgColor.value != Colors.transparent,
                       acc.accModel.bgColor.value,
+                      onClicked: () {
+                        setState(() {
+                          if (acc.accModel.bgColor.value == Colors.transparent &&
+                              acc.accModel.glassFill.value == 0 &&
+                              acc.accModel.opacity.value == 1) {
+                            acc.accModel.bgColor.set(acc.prevBgColor);
+                            acc.accModel.glassFill.set(acc.prevGlassFill);
+                            acc.accModel.opacity.set(acc.prevOpacity);
+                          } else {
+                            acc.prevBgColor = acc.accModel.bgColor.value;
+                            acc.prevGlassFill = acc.accModel.glassFill.value;
+                            acc.prevOpacity = acc.accModel.opacity.value;
+
+                            acc.accModel.bgColor.set(Colors.transparent);
+                            acc.accModel.glassFill.set(0);
+                            acc.accModel.opacity.set(1);
+                          }
+                        });
+                        acc.notify();
+                      },
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+                    acc.accModel.glassFill.value > 0
+                        ? Icon(Icons.blur_on_rounded)
+                        : SizedBox(
+                            width: 20,
+                          ),
                     Text(
                       '${((1 - acc.accModel.opacity.value) * 100).toInt()}%',
                     ),
@@ -345,15 +366,16 @@ class WidgetPropertyState extends State<WidgetProperty> with SingleTickerProvide
             divider(),
             borderModel.expandArea(
                 child: _borderRow(context, acc),
-                titleLineWidget: colorPickerIcon(acc.accModel.borderColor.value, () {
+                titleLineWidget: colorPickerIcon(
+                    acc.accModel.borderColor.value, acc.accModel.borderWidth.value > 0, () {
                   setState(() {
                     if (acc.accModel.borderColor.value != Colors.transparent) {
-                      _prevBorderColor = acc.accModel.borderColor.value;
+                      acc.prevBorderColor = acc.accModel.borderColor.value;
                       acc.accModel.borderColor.set(Colors.transparent);
                       acc.notify();
                     } else {
-                      if (_prevBorderColor != Colors.transparent) {
-                        acc.accModel.borderColor.set(_prevBorderColor);
+                      if (acc.prevBorderColor != Colors.transparent) {
+                        acc.accModel.borderColor.set(acc.prevBorderColor);
                         acc.notify();
                       }
                     }

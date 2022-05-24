@@ -502,7 +502,7 @@ class CretaMainScreenState extends State<CretaMainScreen> {
                       top: 10,
                       left: 10,
                       child: Text(
-                        "Ver 0.10.2",
+                        "Ver 0.10.3",
                         style: MyTextStyles.body1.copyWith(color: Colors.white),
                       )),
                 ],

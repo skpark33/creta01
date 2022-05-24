@@ -12,6 +12,11 @@ import 'models.dart';
 import 'model_enums.dart';
 
 class ContentsModel extends AbsModel {
+  double prevShadowBlur = 0;
+  TextAniType prevAniType = TextAniType.none;
+  Color prevFontColor = Colors.transparent;
+  double prevOutLineWidth = 0;
+
   late String name; // aaa.jpg
   late int bytes;
   late String url;
@@ -48,7 +53,7 @@ class ContentsModel extends AbsModel {
   late UndoAble<double> letterSpacing;
   late UndoAble<double> wordSpacing;
   late UndoAble<TextAniType> aniType;
-  late UndoAble<AlignType> align; // 정렬
+  late UndoAble<TextAlign> align; // 정렬
   late UndoAble<double> anyDuration;
 
   ContentsModel(String accId,
@@ -81,7 +86,7 @@ class ContentsModel extends AbsModel {
     letterSpacing = UndoAble<double>(0, mid);
     wordSpacing = UndoAble<double>(0, mid);
     aniType = UndoAble<TextAniType>(TextAniType.none, mid);
-    align = UndoAble<AlignType>(AlignType.center, mid);
+    align = UndoAble<TextAlign>(TextAlign.center, mid);
     anyDuration = UndoAble<double>(0, mid);
 
     save();
@@ -120,7 +125,7 @@ class ContentsModel extends AbsModel {
     line = UndoAble<TextLine>(src.line.value, mid);
     letterSpacing = UndoAble<double>(src.letterSpacing.value, mid);
     wordSpacing = UndoAble<double>(src.wordSpacing.value, mid);
-    align = UndoAble<AlignType>(src.align.value, mid);
+    align = UndoAble<TextAlign>(src.align.value, mid);
     aniType = UndoAble<TextAniType>(src.aniType.value, mid);
     anyDuration = UndoAble<double>(src.anyDuration.value, mid);
   }
@@ -152,7 +157,7 @@ class ContentsModel extends AbsModel {
     line = UndoAble<TextLine>(TextLine.none, srcMid);
     letterSpacing = UndoAble<double>(0, srcMid);
     wordSpacing = UndoAble<double>(0, srcMid);
-    align = UndoAble<AlignType>(AlignType.center, srcMid);
+    align = UndoAble<TextAlign>(TextAlign.center, srcMid);
     aniType = UndoAble<TextAniType>(TextAniType.none, srcMid);
     anyDuration = UndoAble<double>(0, srcMid);
   }
@@ -227,7 +232,7 @@ class ContentsModel extends AbsModel {
     line.set(intToTextLine(map["line"] ?? 0), save: false);
     letterSpacing.set(map["letterSpacing"] ?? 0, save: false);
     wordSpacing.set(map["wordSpacing"] ?? 0, save: false);
-    align.set(intToAlignType(map["align"] ?? 4), save: false);
+    align.set(intToTextAlign(map["align"] ?? 2), save: false);
     aniType.set(intToTextAniType(map["aniType"] ?? 0), save: false);
     anyDuration.set(map["anyDuration"] ?? 0, save: false);
   }
@@ -268,7 +273,7 @@ class ContentsModel extends AbsModel {
         "line": textLineToInt(line.value),
         "letterSpacing": letterSpacing.value,
         "wordSpacing": wordSpacing.value,
-        "align": alignTypeToInt(align.value),
+        "align": textAlignToInt(align.value),
         "aniType": textAniTypeToInt(aniType.value),
         "anyDuration": anyDuration.value,
       }.entries);

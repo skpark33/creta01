@@ -80,6 +80,12 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
     height: 480,
     width: 240,
   );
+  ExapandableModel aniModel = ExapandableModel(
+    //title: '${MyStrings.bgColor}/${MyStrings.glass}/${MyStrings.opacity}',
+    title: MyStrings.anime,
+    height: 480,
+    width: 240,
+  );
 
   void unexpendAll(String expandModelName) {
     for (ExapandableModel model in _modelList) {
@@ -95,6 +101,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
     _modelList.add(fontColorModel);
     _modelList.add(outlineModel);
     _modelList.add(shadowModel);
+    _modelList.add(aniModel);
   }
 
   Future<ContentsModel> waitContents(SelectedModel selectedModel) async {
@@ -146,6 +153,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                 textSize = getStringSize(model.remoteUrl!);
               }
 
+              double iconSize = 25;
               List<Widget> textPropList = [];
               if (model.contentsType == ContentsType.text) {
                 // Text Row
@@ -153,16 +161,6 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                 // Text Font Row
                 textPropList.add(fontRow(model));
                 // Text AutoSize
-                textPropList.add(Padding(
-                  padding: const EdgeInsets.only(left: 12.0),
-                  child: myCheckBox(MyStrings.isAutoSize, model.isAutoSize.value, () {
-                    setState(() {
-                      model.isAutoSize.set(!model.isAutoSize.value);
-                      _invalidateContents();
-                    });
-                  }, 8, 2, 0, 2),
-                ));
-                // Text Font Size
                 textPropList.add(
                   Padding(
                     padding: const EdgeInsets.fromLTRB(22, 0, 0, 0),
@@ -181,6 +179,176 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                     ),
                   ),
                 );
+
+                textPropList.add(Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: myCheckBox(MyStrings.isAutoSize, model.isAutoSize.value, () {
+                    setState(() {
+                      model.isAutoSize.set(!model.isAutoSize.value);
+                      _invalidateContents();
+                    });
+                  }, 8, 2, 0, 2),
+                ));
+                // textPropList.add(Padding(
+                //   padding: const EdgeInsets.only(left: 12.0),
+                //   child: Row(
+                //     children: [
+                //       myCheckBox(MyStrings.isBold, model.isBold.value, isBold: true, () {
+                //         setState(() {
+                //           model.isBold.set(!model.isBold.value);
+                //           _invalidateContents();
+                //         });
+                //       }, 8, 2, 0, 2),
+                //       myCheckBox(MyStrings.isItalic, model.isItalic.value, isItalic: true, () {
+                //         setState(() {
+                //           model.isItalic.set(!model.isItalic.value);
+                //           _invalidateContents();
+                //         });
+                //       }, 8, 2, 0, 2),
+                //     ],
+                //   ),
+                // ));
+                // textPropList.add(Padding(
+                //   padding: const EdgeInsets.only(left: 12.0),
+                //   child: myCheckBox(MyStrings.isItalic, model.isItalic.value, isItalic: true, () {
+                //     setState(() {
+                //       model.isItalic.set(!model.isItalic.value);
+                //       _invalidateContents();
+                //     });
+                //   }, 8, 2, 0, 2),
+                // ));
+                textPropList.add(Padding(
+                  padding: const EdgeInsets.fromLTRB(22, 10, 22, 10),
+                  child: Row(
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: [
+                      Container(
+                          // 볼드
+                          margin: EdgeInsets.only(right: 2),
+                          color: model.isBold.value ? MyColors.primaryColor : Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                model.isBold.set(!model.isBold.value);
+                                _invalidateContents();
+                              });
+                            },
+                            icon: Icon(Icons.format_bold_outlined),
+                            iconSize: iconSize,
+                          )),
+                      Container(
+                          // 이탤릭
+                          margin: EdgeInsets.only(right: 2),
+                          color: model.isItalic.value ? MyColors.primaryColor : Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                model.isItalic.set(!model.isItalic.value);
+                                _invalidateContents();
+                              });
+                            },
+                            icon: Icon(Icons.format_italic_outlined),
+                            iconSize: iconSize,
+                          )),
+                      Container(
+                          // 언더라인
+                          margin: EdgeInsets.only(right: 2),
+                          color: model.line.value == TextLine.underline
+                              ? MyColors.primaryColor
+                              : Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                model.line.set(model.line.value == TextLine.underline
+                                    ? TextLine.none
+                                    : TextLine.underline);
+                                _invalidateContents();
+                              });
+                            },
+                            icon: Icon(Icons.format_underlined_outlined),
+                            iconSize: iconSize,
+                          )),
+                      //Icon(Icons.format_underlined_outlined, size: 32.0),
+                      Container(
+                          // 좌로 정렬
+                          margin: EdgeInsets.only(right: 2),
+                          color: model.align.value == TextAlign.left
+                              ? MyColors.primaryColor
+                              : Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                model.align.set(model.align.value == TextAlign.left
+                                    ? TextAlign.center
+                                    : TextAlign.left);
+                                _invalidateContents();
+                              });
+                            },
+                            icon: Icon(Icons.format_align_left_outlined),
+                            iconSize: iconSize,
+                          )),
+                      Container(
+                          // 가운데 정렬
+                          margin: EdgeInsets.only(right: 2),
+                          color: model.align.value == TextAlign.center
+                              ? MyColors.primaryColor
+                              : Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                model.align.set(model.align.value == TextAlign.center
+                                    ? TextAlign.left
+                                    : TextAlign.center);
+                                _invalidateContents();
+                              });
+                            },
+                            icon: Icon(Icons.format_align_center_outlined),
+                            iconSize: iconSize,
+                          )),
+                      Container(
+                          // 우로 정렬
+                          margin: EdgeInsets.only(right: 2),
+                          color: model.align.value == TextAlign.right
+                              ? MyColors.primaryColor
+                              : Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                model.align.set(model.align.value == TextAlign.right
+                                    ? TextAlign.center
+                                    : TextAlign.right);
+                                _invalidateContents();
+                              });
+                            },
+                            icon: Icon(Icons.format_align_right_outlined),
+                            iconSize: iconSize,
+                          )),
+                      Container(
+                          // 퍼짐 정렬
+                          margin: EdgeInsets.only(right: 2),
+                          color: model.align.value == TextAlign.justify
+                              ? MyColors.primaryColor
+                              : Colors.transparent,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                model.align.set(model.align.value == TextAlign.justify
+                                    ? TextAlign.center
+                                    : TextAlign.justify);
+                                _invalidateContents();
+                              });
+                            },
+                            icon: Icon(Icons.format_align_justify_outlined),
+                            iconSize: iconSize,
+                          )),
+                    ],
+                  ),
+                ));
+
+                //textPropList.add(lineRow(model));
+
+                // Text Font Size
+
                 // Text Font Color
                 textPropList.add(divider());
                 textPropList.add(fontColorExpander(model));
@@ -188,6 +356,8 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                 textPropList.add(outlineExpander(model));
                 textPropList.add(divider());
                 textPropList.add(shadowExpander(model));
+                textPropList.add(divider());
+                textPropList.add(aniExpander(model));
                 textPropList.add(divider());
               }
 
@@ -427,6 +597,43 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
     );
   }
 
+  Widget lineRow(ContentsModel model) {
+    return Padding(
+      // 폰트
+      padding: const EdgeInsets.fromLTRB(22, 0, 0, 0),
+      child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        Text(MyStrings.line),
+        const SizedBox(
+          width: 15,
+        ),
+        DropdownButton<String>(
+          value: textDecorationToString(model.line.value),
+          icon: const Icon(Icons.arrow_downward),
+          elevation: 16,
+          //style: const TextStyle(color: Colors.deepPurple),
+          underline: Container(height: 2, color: MyColors.primaryColor),
+          onChanged: (String? newValue) {
+            setState(() {
+              TextLine line = stringToTextDecoration(newValue!);
+              model.line.set(line);
+              _invalidateContents();
+            });
+          },
+          items: <String>[
+            MyStrings.none,
+            MyStrings.underline,
+            MyStrings.overline,
+            MyStrings.lineThrough,
+          ].map<DropdownMenuItem<String>>((String e) {
+            TextLine line = stringToTextDecoration(e);
+            return DropdownMenuItem<String>(
+                value: e, child: Text(e, style: TextStyle(decoration: getTextDecoration(line))));
+          }).toList(),
+        ),
+      ]),
+    );
+  }
+
   Widget fontColorExpander(ContentsModel model) {
     return fontColorModel.expandArea(
         child: fontColorRow(context, model),
@@ -441,9 +648,18 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             glassIcon(
-              false, //model.glassFill.value > 0,
-              model.fontColor.value,
-            ),
+                model.fontColor.value != Colors.transparent, //model.glassFill.value > 0,
+                model.fontColor.value, onClicked: () {
+              setState(() {
+                if (model.fontColor.value != Colors.transparent) {
+                  model.prevFontColor = model.fontColor.value;
+                  model.fontColor.set(Colors.transparent);
+                } else {
+                  model.fontColor.set(model.prevFontColor);
+                }
+              });
+              _invalidateContents();
+            }),
             SizedBox(
               width: 20,
             ),
@@ -510,8 +726,20 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             glassIcon(
-              false, //model.glassFill.value > 0,
+              model.outLineColor.value != Colors.transparent, //model.glassFill.value > 0,
               model.outLineColor.value,
+              onClicked: () {
+                setState(() {
+                  //model.outLineColor.set(Colors.transparent);
+                  if (model.outLineWidth.value != 0) {
+                    model.prevOutLineWidth = model.outLineWidth.value;
+                    model.outLineWidth.set(0);
+                  } else {
+                    model.outLineWidth.set(model.prevOutLineWidth);
+                  }
+                });
+                _invalidateContents();
+              },
             ),
             SizedBox(
               width: 20,
@@ -582,8 +810,20 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             glassIcon(
-              false, //model.glassFill.value > 0,
+              model.shadowColor.value != Colors.transparent,
               model.shadowColor.value,
+              onClicked: () {
+                setState(() {
+                  //model.outLineColor.set(Colors.transparent);
+                  if (model.shadowBlur.value != 0) {
+                    model.prevShadowBlur = model.shadowBlur.value;
+                    model.shadowBlur.set(0);
+                  } else {
+                    model.shadowBlur.set(model.prevShadowBlur);
+                  }
+                });
+                _invalidateContents();
+              },
             ),
             SizedBox(
               width: 20,
@@ -643,6 +883,76 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
           _invalidateContents();
         },
       ),
+    );
+  }
+
+  Widget aniExpander(ContentsModel model) {
+    return aniModel.expandArea(
+        child: aniRow(context, model),
+        setStateFunction: () {
+          setState(() {
+            unexpendAll(aniModel.title);
+            aniModel.toggleSelected();
+          });
+        },
+        titleSize: 150,
+        titleLineWidget: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              child: Text(textAniTypeToString(model.aniType.value)),
+              onPressed: () {
+                setState(() {
+                  //model.outLineColor.set(Colors.transparent);
+                  if (model.aniType.value != TextAniType.none) {
+                    model.prevAniType = model.aniType.value;
+                    model.aniType.set(TextAniType.none);
+                  } else {
+                    model.aniType.set(model.prevAniType);
+                  }
+                });
+                _invalidateContents();
+              },
+            ),
+            SizedBox(
+              width: 20,
+            ),
+          ],
+        ));
+  }
+
+  Widget aniRow(BuildContext context, ContentsModel model) {
+    return Padding(
+        padding: const EdgeInsets.only(
+          left: 22,
+        ),
+        child: Column(
+          children: [
+            marquee(model),
+          ],
+        ));
+  }
+
+  Widget marquee(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.marquee);
+        });
+        _invalidateContents();
+      },
+      child: Container(),
+      // child: TextScroll(
+      //   'marquee',
+      //   mode: TextScrollMode.bouncing,
+      //   numberOfReps: 5,
+      //   delayBefore: Duration(milliseconds: 2000),
+      //   pauseBetween: Duration(milliseconds: 1000),
+      //   velocity: Velocity(pixelsPerSecond: Offset(100, 0)),
+      //   style: TextStyle(decoration: TextDecoration.underline),
+      //   textAlign: TextAlign.right,
+      //   selectable: true,
+      // ),
     );
   }
 }

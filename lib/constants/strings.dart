@@ -219,12 +219,19 @@ class MyStrings {
   static String fontMacondo = Locale.isKr() ? 'Macondo마콘도' : "Macondo";
 
   static String isAutoSize = Locale.isKr() ? '글자크기를 창의 크기에 맞춤' : "Adjust font size to window size";
+  static String isBold = Locale.isKr() ? '볼드' : "Bold";
+  static String isItalic = Locale.isKr() ? '이탤릭' : "Italic";
+
+  static String line = Locale.isKr() ? '라인표시' : "lines";
+  static String underline = Locale.isKr() ? '언더라인' : "Underline";
+  static String overline = Locale.isKr() ? '오버라인' : "Overline";
+  static String lineThrough = Locale.isKr() ? '라인쓰루' : "LineThrough";
   static String fontSize = Locale.isKr() ? '글자크기' : "Font size";
   static String fontColor = Locale.isKr() ? '글자색상' : "Font color";
   static String outline = Locale.isKr() ? '외곽선' : "Outline";
   static String outlineWidth = Locale.isKr() ? '두께' : "Outline Width";
 
-  static String shadow = Locale.isKr() ? '그림자' : "Shadow";
-  static String shadowBlur = Locale.isKr() ? '그림자 두께' : "Shadow Width";
-  static String shadowIntensity = Locale.isKr() ? '그림자 강도' : "Shadow Intensity";
+  static String shadow = Locale.isKr() ? '네온' : "Neon";
+  static String shadowBlur = Locale.isKr() ? '네온 두께' : "Shadow Width";
+  static String shadowIntensity = Locale.isKr() ? '네온 강도' : "Shadow Intensity";
 }

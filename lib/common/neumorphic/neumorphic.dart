@@ -126,12 +126,12 @@ Widget borderColorPicker(Color borderColor, void Function() onSelect) {
       const SizedBox(
         width: 25,
       ),
-      colorPickerIcon(borderColor, onSelect),
+      colorPickerIcon(borderColor, true, onSelect),
     ],
   );
 }
 
-MyColorIndicator colorPickerIcon(Color color, void Function() onSelect) {
+MyColorIndicator colorPickerIcon(Color color, bool hasBorder, void Function() onSelect) {
   return MyColorIndicator(
     color: color == Colors.transparent ? const Color(0xFFFFFFFF) : color,
     onSelect: onSelect,
@@ -139,7 +139,7 @@ MyColorIndicator colorPickerIcon(Color color, void Function() onSelect) {
     width: 24,
     height: 24,
     borderRadius: 0,
-    hasBorder: true,
+    hasBorder: hasBorder,
     borderColor: color == Colors.transparent ? Colors.black : MyColors.primaryColor,
     elevation: 5,
     selectedIcon: color == Colors.transparent ? Icons.clear_outlined : Icons.rectangle,
