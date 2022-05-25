@@ -332,8 +332,10 @@ class PlayManager {
 
       // 아무것도 돌고 있지 않다면,
       if (_currentOrder < 0) {
-        //_currentOrder = 0;
-        return;
+        _currentOrder = getAliveFirstOrder();
+        if (_currentOrder < 0) {
+          return;
+        }
       }
 
       AbsPlayWidget? player = _orderMap[_currentOrder];
@@ -406,12 +408,34 @@ class PlayManager {
 
   int getLastOrder() {
     int retval = -1;
-    for (AbsPlayWidget player in _orderMap.values) {
-      if (retval < player.model!.order.value) {
-        retval = player.model!.order.value;
+    for (int order in _orderMap.keys) {
+      if (retval < order) {
+        retval = order;
       }
     }
     return (retval);
+  }
+
+  int getAliveLastOrder() {
+    int retval = -1;
+    for (AbsPlayWidget player in _orderMap.values) {
+      if (player.model == null) continue;
+      if (player.model!.isRemoved.value == true) continue;
+      int order = player.model!.order.value;
+      if (retval < order) {
+        retval = order;
+      }
+    }
+    return (retval);
+  }
+
+  int getAliveFirstOrder() {
+    for (AbsPlayWidget player in _orderMap.values) {
+      if (player.model == null) continue;
+      if (player.model!.isRemoved.value == true) continue;
+      return player.model!.order.value;
+    }
+    return -1;
   }
 
   Future<void> push(ACC acc, ContentsModel model) async {
@@ -682,11 +706,10 @@ class PlayManager {
   }
 
   bool _toNext() {
-    //logHolder.log('_toNext($_currentOrder)', level: 6);
-    int counter = 0;
-    int lastOrder = getLastOrder();
-    while (counter <= lastOrder) {
-      int newOrder = _currentOrder + 1;
+    int lastOrder = getAliveLastOrder();
+    int newOrder = _currentOrder + 1;
+    logHolder.log('_toNext(current=$_currentOrder, last=$lastOrder)', level: 6);
+    for (int i = 0; i < lastOrder; i++) {
       if (newOrder > lastOrder) {
         newOrder = 0;
       }
@@ -698,18 +721,17 @@ class PlayManager {
           return true;
         }
       }
-      counter++;
+      newOrder++;
     }
-    logHolder.log('invalid order $counter', level: 7);
+    logHolder.log('invalid order $newOrder', level: 7);
     _currentOrder = -1;
     return false;
   }
 
   bool _toPrev() {
-    int counter = 0;
-    int lastOrder = getLastOrder();
-    while (counter <= lastOrder) {
-      int newOrder = _currentOrder - 1;
+    int lastOrder = getAliveLastOrder();
+    int newOrder = _currentOrder - 1;
+    for (int i = 0; i < lastOrder; i++) {
       if (newOrder < 0) {
         newOrder = lastOrder;
       }
@@ -720,9 +742,9 @@ class PlayManager {
           return true;
         }
       }
-      counter++;
+      newOrder--;
     }
-    logHolder.log('invalid order $counter', level: 7);
+    logHolder.log('invalid order $newOrder', level: 7);
     _currentOrder = -1;
     return false;
   }
@@ -776,6 +798,7 @@ class PlayManager {
           if (pageManagerHolder!.isContents() &&
               accManagerHolder!.isCurrentIndex(baseWidget.acc!.accModel.mid)) {
             selectedModelHolder!.setModel(currentPlayer.model!);
+            pageManagerHolder!.notify();
           }
         }
       }
@@ -827,6 +850,7 @@ class PlayManager {
           if (pageManagerHolder!.isContents() &&
               accManagerHolder!.isCurrentIndex(baseWidget.acc!.accModel.mid)) {
             selectedModelHolder!.setModel(currentPlayer.model!);
+            pageManagerHolder!.notify();
           }
         }
       }
