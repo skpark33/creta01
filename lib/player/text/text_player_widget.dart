@@ -1,10 +1,12 @@
 // ignore: implementation_imports
 // ignore_for_file: prefer_final_fields
 
-import 'dart:math';
-import 'dart:ui' as ui;
+//import 'dart:math';
+import 'package:creta01/constants/constants.dart';
 import 'package:provider/provider.dart';
 //import 'package:text_scroll/text_scroll.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 import 'package:creta01/book_manager.dart';
 import 'package:creta01/common/notifiers/notifiers.dart';
@@ -15,7 +17,7 @@ import 'package:creta01/model/model_enums.dart';
 import 'package:creta01/acc/acc.dart';
 import 'package:creta01/player/abs_player.dart';
 
-import '../../common/util/my_utils.dart';
+//import '../../common/util/my_utils.dart';
 import '../../constants/styles.dart';
 
 // ignore: must_be_immutable
@@ -153,20 +155,21 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
     double fontSize = widget.model!.fontSize.value;
 
     if (widget.model!.isAutoSize.value == true) {
-      int textSize = getStringSize(uri); // 텍스트 길이
-      double entireWidth = fontSize * textSize; // 한줄로 했을때, 필요한 width
-      int lineCount =
-          (entireWidth / (0.9 * realSize.width)).ceil(); //  현재 폰트사이즈에서 현재 width 상황에서 필요한 라인수
-      double idealWidth = fontSize * (textSize.toDouble() / lineCount.toDouble()); //
-      double idealHeight = (lineCount + 1) * fontSize;
+      fontSize = maxFontSize;
+      //   int textSize = getStringSize(uri); // 텍스트 길이
+      //   double entireWidth = fontSize * textSize; // 한줄로 했을때, 필요한 width
+      //   int lineCount =
+      //       (entireWidth / (0.9 * realSize.width)).ceil(); //  현재 폰트사이즈에서 현재 width 상황에서 필요한 라인수
+      //   double idealWidth = fontSize * (textSize.toDouble() / lineCount.toDouble()); //
+      //   double idealHeight = (lineCount + 1) * fontSize;
 
-      // 이상적인 사이즈가 현재 사이즈보다 크다면, 폰트가 줄어들어야 하고,
-      // 현재 사이즈보다 작다면,  폰트가 커져야 한다.
-      double fontRatio = sqrt(realSize.width * realSize.height) / sqrt(idealWidth * idealHeight);
-      fontSize = fontSize * fontRatio;
+      //   // 이상적인 사이즈가 현재 사이즈보다 크다면, 폰트가 줄어들어야 하고,
+      //   // 현재 사이즈보다 작다면,  폰트가 커져야 한다.
+      //   double fontRatio = sqrt(realSize.width * realSize.height) / sqrt(idealWidth * idealHeight);
+      //   fontSize = fontSize * fontRatio;
 
-      //logHolder.log("font = ${widget.model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
-      //    level: 6);
+      //   //logHolder.log("font = ${widget.model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
+      //   //    level: 6);
     }
 
     TextStyle style = DefaultTextStyle.of(context).style.copyWith(
@@ -177,6 +180,22 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
         fontWeight: widget.model!.isBold.value ? FontWeight.bold : FontWeight.normal,
         fontStyle: widget.model!.isItalic.value ? FontStyle.italic : FontStyle.normal);
 
+    //shadow case
+
+    // //outline case
+    // if (widget.model!.outLineWidth.value > 0) {
+    //   style.copyWith(
+    //     foreground: Paint()
+    //       ..style = PaintingStyle.stroke
+    //       ..strokeWidth = widget.model!.outLineWidth.value
+    //       ..color = widget.model!.outLineColor.value,
+    //   );
+    // }
+    if (widget.model!.isAutoSize.value == false) {
+      style.copyWith(
+        fontSize: fontSize,
+      );
+    }
     return Center(
       child: Container(
         padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
@@ -185,99 +204,106 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
         width: realSize.width,
         height: realSize.height,
         color: Colors.transparent,
-        child: widget.model!.shadowBlur.value > 0
-            ? shadowText(
-                outLineText(uri, style, fontSize),
-                uri,
-                style,
-                widget.model!.shadowColor.value,
-                widget.model!.shadowBlur.value,
-                widget.model!.shadowIntensity.value)
-            : outLineText(uri, style, fontSize),
+        child: outLineText(uri, style, fontSize),
+        // child: widget.model!.shadowBlur.value > 0
+        // ? shadowText(uri, style, widget.model!.shadowColor.value,
+        //     widget.model!.shadowBlur.value, widget.model!.shadowIntensity.value)
+        // : outLineText(uri, style, fontSize),
       ),
     );
+
+    // AutoSize 인 경우
   }
 
   Widget outLineText(String text, TextStyle style, double fontSize) {
-    return Stack(
-      alignment: AlignmentDirectional.center,
-      children: [
-        widget.model!.aniType.value != AnimeType.none
-            ? animationText(text, style)
-            : widget.model!.outLineWidth.value > 0
-                ? Text(
-                    text,
-                    textAlign: widget.model!.align.value,
-                    style: style.copyWith(
-                      foreground: Paint()
-                        ..style = PaintingStyle.stroke
-                        ..strokeWidth = widget.model!.outLineWidth.value
-                        ..color = widget.model!.outLineColor.value,
-                    ),
-                    // DefaultTextStyle.of(context).style.copyWith(
-                    //       fontFamily: widget.model!.font.value,
-                    //       fontSize: fontSize,
-                    //       foreground: Paint()
-                    //         ..style = PaintingStyle.stroke
-                    //         ..strokeWidth = widget.model!.outLineWidth.value
-                    //         ..color = widget.model!.outLineColor.value,
-                    //     ),
-                  )
-                // style: style.copyWith(
-                //   foreground: Paint()
-                //     ..style = PaintingStyle.stroke
-                //     ..strokeWidth = widget.model!.outLineWidth.value
-                //     ..color = widget.model!.outLineColor.value,
-                // ),
-                //)
-                : Container(),
-        Text(text, textAlign: widget.model!.align.value, style: style),
-      ],
-    );
-  }
+    logHolder.log('outLineText ${widget.model!.outLineWidth.value} ${widget.model!.aniType.value}',
+        level: 6);
 
-  Widget shadowText(Widget child, String text, TextStyle style, Color shadowColor, double blur,
-      double intensity) {
-    logHolder.log('shadowText $blur', level: 6);
-    return ClipRect(
-      child: Stack(
+    // 새도우의 경우.
+    TextStyle? shadowStyle;
+    if (widget.model!.shadowBlur.value > 0) {
+      logHolder.log('widget.model!.shadowBlur.value=${widget.model!.shadowBlur.value}', level: 6);
+      shadowStyle = style.copyWith(shadows: [
+        Shadow(
+            color: widget.model!.shadowColor.value.withOpacity(widget.model!.shadowIntensity.value),
+            offset: Offset(
+                widget.model!.shadowBlur.value * 0.75, widget.model!.shadowBlur.value * 0.75),
+            blurRadius: widget.model!.shadowBlur.value),
+      ]);
+    }
+
+    if (widget.model!.aniType.value != TextAniType.none) {
+      return animationText(text, shadowStyle ?? style);
+    }
+
+    //aninationText 는 아웃라인을 적용하지 못한다.
+    // 아웃라인의 경우.
+    if (widget.model!.outLineWidth.value > 0) {
+      TextStyle outlineStyle = style.copyWith(
+        foreground: Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = widget.model!.outLineWidth.value
+          ..color = widget.model!.outLineColor.value,
+      );
+
+      return Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          //Positioned(
-          //top: blur,
-          //left: blur,
-          //child:
-          Text(
-            text,
-            textAlign: widget.model!.align.value,
-            style: style.copyWith(color: shadowColor.withOpacity(intensity)),
-          ),
-          //),
-          BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-            child: child,
-          ),
+          widget.model!.isAutoSize.value
+              ? AutoSizeText(text, textAlign: widget.model!.align.value, style: outlineStyle)
+              : Text(text, textAlign: widget.model!.align.value, style: outlineStyle),
+          widget.model!.isAutoSize.value
+              ? AutoSizeText(text,
+                  textAlign: widget.model!.align.value, style: shadowStyle ?? style)
+              : Text(text, textAlign: widget.model!.align.value, style: shadowStyle ?? style),
         ],
-      ),
-    );
+      );
+    }
+
+    // 아웃라인도 아니고, 애니매이션도 아닌 경우.
+    return widget.model!.isAutoSize.value
+        ? AutoSizeText(text, textAlign: widget.model!.align.value, style: shadowStyle ?? style)
+        : Text(text, textAlign: widget.model!.align.value, style: shadowStyle ?? style);
   }
+
+  // Widget shadowText(
+  //     String text, TextStyle style, Color shadowColor, double blur, double intensity) {
+  //   logHolder.log('shadowText $blur', level: 6);
+  //   if (widget.model!.isAutoSize.value == true) {
+  //     return AutoSizeText(
+  //       text,
+  //       textAlign: widget.model!.align.value,
+  //       style: style.copyWith(shadows: [
+  //         Shadow(
+  //             color: shadowColor.withOpacity(intensity),
+  //             offset: Offset(blur * 0.75, blur * 0.75),
+  //             blurRadius: blur),
+  //       ]),
+  //     );
+  //   }
+  //   return Text(
+  //     text,
+  //     textAlign: widget.model!.align.value,
+  //     style: style.copyWith(shadows: [
+  //       Shadow(
+  //           color: shadowColor.withOpacity(intensity),
+  //           offset: Offset(blur * 0.75, blur * 0.75),
+  //           blurRadius: blur),
+  //     ]),
+  //   );
+  // }
 
   Widget animationText(String text, TextStyle style) {
     switch (widget.model!.aniType.value) {
-      case TextAniType.marquee:
+      case TextAniType.tickerSide:
         {
-          return Container();
-          // return TextScroll(
-          //   text,
-          //   mode: TextScrollMode.bouncing,
-          //   numberOfReps: 200,
-          //   delayBefore: const Duration(milliseconds: 2000),
-          //   pauseBetween: const Duration(milliseconds: 1000),
-          //   velocity: const Velocity(pixelsPerSecond: Offset(100, 0)),
-          //   style: style,
-          //   textAlign: TextAlign.right,
-          //   selectable: true,
-          // );
+          return TextScroll(
+            text,
+            style: style,
+            textAlign: TextAlign.left,
+            mode: TextScrollMode.endless,
+            velocity: Velocity(pixelsPerSecond: Offset(widget.model!.anyDuration.value * 2, 0)),
+          );
         }
       default:
         return Container();

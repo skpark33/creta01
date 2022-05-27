@@ -17,3 +17,5 @@ const String pagePrefix = 'Page=';
 const String accPrefix = 'ACC=';
 const String contentsPrefix = 'Con=';
 const String bookPrefix = 'Book=';
+
+const double maxFontSize = 300;

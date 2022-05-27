@@ -192,19 +192,22 @@ class StudioSubScreenState extends State<StudioSubScreen> {
   PreferredSizeWidget buildAppBar(BookManager bookManager) {
     bool isNarrow = MediaQuery.of(context).size.width <= minWindowWidth;
     bool isReadOnly = bookManager.isReadOnly();
+    double maxLeadingSize = 400;
     return AppBar(
       backgroundColor: MyColors.appbar,
-      title: Text(
-        bookManager.defaultBook!.name.value,
-        style: MyTextStyles.h5,
+      title: Center(
+        child: Text(
+          bookManager.defaultBook!.name.value,
+          style: MyTextStyles.h5,
+        ),
       ),
-      leadingWidth: isNarrow ? 200 : 600,
+      leadingWidth: isNarrow ? 200 : maxLeadingSize,
       leading: isNarrow
           ? logoIcon()
           : isReadOnly
               ? appBarLeadingReadOnly()
               : appBarLeading(),
-      actions: isNarrow ? [] : appBarAction(),
+      actions: isNarrow ? [] : appBarAction(200),
     );
   }
 
@@ -347,8 +350,11 @@ class StudioSubScreenState extends State<StudioSubScreen> {
     );
   }
 
-  List<Widget> appBarAction() {
+  List<Widget> appBarAction(double width) {
     return [
+      SizedBox(
+        width: width,
+      ),
       ElevatedButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(MyColors.primaryColor),

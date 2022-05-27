@@ -144,10 +144,11 @@ class MainScreenState extends State<StudioMainScreen> {
     final key = event.logicalKey;
     if (event is RawKeyDownEvent) {
       if (keys.contains(key)) return;
-      if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
-        logHolder.log('delete pressed');
-        accManagerHolder!.removeACC(context);
-      }
+      // textField 의 focus bug 때문에, delete  key 를 사용할 수 없다.
+      // if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
+      //   logHolder.log('delete pressed');
+      //   accManagerHolder!.removeACC(context);
+      // }
       if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
         logHolder.log('tab pressed');
         accManagerHolder!.nextACC(context);

@@ -810,3 +810,15 @@ int getStringSize(String str) {
   }
   return retval;
 }
+
+String shortenText(String initialText) {
+  logHolder.log('shortenText($initialText)', level: 6);
+  int textSize = getStringSize(initialText);
+  String name = initialText;
+  if (textSize > 40) {
+    name = initialText.substring(0, (initialText.length / (textSize / 40).ceil()).round());
+    name += "...";
+  }
+  logHolder.log('shortenText($name)', level: 6);
+  return name;
+}

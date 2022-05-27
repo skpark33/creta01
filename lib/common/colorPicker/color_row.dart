@@ -16,6 +16,8 @@ Widget myColorPicker(
   double? opacity,
   double? glassFill,
   double? outLineWidth,
+  double maxGlassFill = 30,
+  double maxOutLine = 9,
   required TextEditingController controller,
   required void Function(Color value) favorateColorPick,
   required void Function(Color value) onColorChangedEnd,
@@ -112,7 +114,7 @@ Widget myColorPicker(
                   onChanged: (val) => onGlassChanged(val),
                   onChangeStart: (val) {},
                   min: 0,
-                  max: 30,
+                  max: maxGlassFill,
                 )
               : Container(),
           outLineWidth != null
@@ -122,7 +124,7 @@ Widget myColorPicker(
                   onChanged: (val) => onOutLineChanged(val),
                   onChangeStart: (val) {},
                   min: 0,
-                  max: 9,
+                  max: maxOutLine,
                 )
               : Container(),
           opacity != null

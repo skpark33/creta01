@@ -78,82 +78,97 @@ class _BookPropertyState extends State<BookProperty> {
           height: 40,
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(22, 6, 10, 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+          padding: const EdgeInsets.fromLTRB(22, 6, 22, 10),
+          child:
+              //Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //children: [
               Container(
-                padding: EdgeInsets.zero,
-                width: layoutPropertiesWidth * 0.75,
-                child: myTextField(
-                  name,
-                  maxLines: null,
-                  limit: 128,
-                  textAlign: TextAlign.start,
-                  labelText: MyStrings.bookName,
-                  controller: nameCon,
-                  hasBorder: true,
-                  style: DefaultTextStyle.of(context).style.copyWith(fontSize: 16),
-                  onEditingComplete: _onTitleEditingComplete,
-                ),
-              ),
-              writeButton(
-                onPressed: _onTitleEditingComplete,
-              ),
-            ],
+            padding: EdgeInsets.zero,
+            width: layoutPropertiesWidth * 0.75,
+            child: myTextField(
+              name,
+              maxLines: null,
+              limit: 128,
+              textAlign: TextAlign.start,
+              labelText: MyStrings.bookName,
+              controller: nameCon,
+              hasBorder: true,
+              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 16),
+              onEditingComplete: _onTitleEditingComplete,
+            ),
           ),
+          // writeButton(
+          //   onPressed: _onTitleEditingComplete,
+          // ),
+          //],
+          //),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(22, 6, 10, 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+          padding: const EdgeInsets.fromLTRB(22, 6, 22, 10),
+          child:
+              //Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //children: [
               Container(
-                padding: EdgeInsets.zero,
-                width: layoutPropertiesWidth * 0.75,
-                child: myTextField(
-                  desc,
-                  limit: 1000,
-                  textAlign: TextAlign.start,
-                  labelText: MyStrings.desc,
-                  controller: descCon,
-                  hasBorder: true,
-                  maxLines: null,
-                  style: DefaultTextStyle.of(context).style.copyWith(fontSize: 16),
-                  onEditingComplete: _onDescEditingComplete,
-                ),
-              ),
-              writeButton(
-                onPressed: _onDescEditingComplete,
-              ),
-            ],
+            padding: EdgeInsets.zero,
+            width: layoutPropertiesWidth * 0.75,
+            child: myTextField(
+              desc,
+              limit: 1000,
+              textAlign: TextAlign.start,
+              labelText: MyStrings.desc,
+              controller: descCon,
+              hasBorder: true,
+              maxLines: null,
+              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 16),
+              onEditingComplete: _onDescEditingComplete,
+            ),
           ),
+          // writeButton(
+          //   onPressed: _onDescEditingComplete,
+          // ),
+          //],
+          //),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(22, 6, 10, 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+          padding: const EdgeInsets.fromLTRB(22, 6, 22, 10),
+          child:
+              //Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //children: [
               Container(
-                padding: EdgeInsets.zero,
-                width: layoutPropertiesWidth * 0.75,
-                child: myTextField(
-                  hash,
-                  maxLines: null,
-                  limit: 128,
-                  textAlign: TextAlign.start,
-                  labelText: MyStrings.hashTag,
-                  controller: hashCon,
-                  hasBorder: true,
-                  style: DefaultTextStyle.of(context).style.copyWith(fontSize: 16),
-                  onEditingComplete: _onHashEditingComplete,
-                ),
-              ),
-              writeButton(
-                onPressed: _onHashEditingComplete,
-              ),
-            ],
+            padding: EdgeInsets.zero,
+            width: layoutPropertiesWidth * 0.75,
+            child: myTextField(
+              hash,
+              maxLines: null,
+              limit: 128,
+              textAlign: TextAlign.start,
+              labelText: MyStrings.hashTag,
+              controller: hashCon,
+              hasBorder: true,
+              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 16),
+              onEditingComplete: _onHashEditingComplete,
+            ),
           ),
+          // writeButton(
+          //   onPressed: _onHashEditingComplete,
+          // ),
+          //],
+          //),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 22),
+          child: basicButton(
+              alignment: Alignment.centerRight,
+              name: MyStrings.save,
+              iconData: Icons.save,
+              onPressed: () {
+                _onTitleEditingComplete();
+                _onDescEditingComplete();
+                _onHashEditingComplete();
+              }),
         ),
         Padding(
           // 용도
@@ -427,7 +442,7 @@ class _BookPropertyState extends State<BookProperty> {
   }
 
   void _onHashEditingComplete() {
-    String hashTagForm = '# ${hashCon.text.replaceAll(',', ' #')}';
+    String hashTagForm = '# ${hashCon.text.replaceAll(',', ' #').replaceAll(' ', '')}';
     logHolder.log("textval = $hashTagForm");
     bookManagerHolder!.setHash(hashTagForm);
   }

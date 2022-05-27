@@ -6,7 +6,7 @@ import 'package:creta01/acc/acc_manager.dart';
 import 'package:creta01/studio/properties/widget_property.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_neumorphic_null_safety/flutter_neumorphic.dart';
-
+import 'package:text_scroll/text_scroll.dart';
 //import 'package:creta01/model/contents.dart';
 //import 'package:creta01/common/util/logger.dart';
 import 'package:creta01/common/util/textfileds.dart';
@@ -63,14 +63,14 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
   ExapandableModel fontColorModel = ExapandableModel(
     //title: '${MyStrings.bgColor}/${MyStrings.glass}/${MyStrings.opacity}',
     title: '${MyStrings.fontColor}/${MyStrings.opacity}',
-    height: 480,
+    height: 450,
     width: 240,
   );
 
   ExapandableModel outlineModel = ExapandableModel(
     //title: '${MyStrings.bgColor}/${MyStrings.glass}/${MyStrings.opacity}',
     title: MyStrings.outline,
-    height: 480,
+    height: 450,
     width: 240,
   );
 
@@ -161,6 +161,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                 // Text Font Row
                 textPropList.add(fontRow(model));
                 // Text AutoSize
+                //if (model.isAutoSize.value == false) {
                 textPropList.add(
                   Padding(
                     padding: const EdgeInsets.fromLTRB(22, 0, 0, 0),
@@ -175,11 +176,11 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                       },
                       onChangeStart: (val) {},
                       min: 4,
-                      max: 300,
+                      max: maxFontSize,
                     ),
                   ),
                 );
-
+                //}
                 textPropList.add(Padding(
                   padding: const EdgeInsets.only(left: 12.0),
                   child: myCheckBox(MyStrings.isAutoSize, model.isAutoSize.value, () {
@@ -527,6 +528,8 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
             width: layoutPropertiesWidth * 0.75,
             child: myTextField(
               model.remoteUrl!,
+              textInputAction: TextInputAction.newline,
+              keyboardType: TextInputType.multiline,
               maxLines: textSize > 4 * 24 ? 4 : null, //한줄에 24자 정도 들어감
               limit: 4096,
               textAlign: TextAlign.start,
@@ -535,24 +538,26 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
               hasBorder: true,
               style: DefaultTextStyle.of(context).style.copyWith(fontSize: 16),
               onEditingComplete: () {
-                logHolder.log("textval = ${textCon.text}");
-                model.remoteUrl = textCon.text;
-                model.save();
-                _invalidateContents();
+                _onEditingComplete(model);
               },
             ),
           ),
           writeButton(
             onPressed: () {
-              logHolder.log("textval = ${textCon.text}");
-              model.remoteUrl = textCon.text;
-              model.save();
-              _invalidateContents();
+              _onEditingComplete(model);
             },
           ),
         ],
       ),
     );
+  }
+
+  void _onEditingComplete(ContentsModel model) {
+    logHolder.log("textval = ${textCon.text}", level: 6);
+    model.remoteUrl = textCon.text;
+    model.name = shortenText(model.remoteUrl!);
+    model.save();
+    _invalidateContents();
   }
 
   Widget fontRow(ContentsModel model) {
@@ -588,7 +593,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
             MyStrings.fontMacondo,
           ].map<DropdownMenuItem<String>>((String e) {
             String font = getFontFamily(e);
-            logHolder.log("fontFamily====$font", level: 6);
+            //logHolder.log("fontFamily====$font", level: 6);
             return DropdownMenuItem<String>(
                 value: e, child: Text(e, style: TextStyle(fontFamily: font)));
           }).toList(),
@@ -643,7 +648,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
             fontColorModel.toggleSelected();
           });
         },
-        titleSize: 150,
+        titleSize: 130,
         titleLineWidget: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -768,12 +773,20 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
         favorateColorPick: (value) {
           setState(() {
             model.outLineColor.set(value);
+            // 색상을 선택하면, 자동으로 두께를 잡아준다.
+            if (model.outLineWidth.value == 0) {
+              model.outLineWidth.set(5);
+            }
           });
           _invalidateContents();
         },
         onColorChangedEnd: (value) {
           setState(() {
             model.outLineColor.set(value);
+            // 색상을 선택하면, 자동으로 두께를 잡아준다.
+            if (model.outLineWidth.value == 0) {
+              model.outLineWidth.set(5);
+            }
           });
           _invalidateContents();
           currentUser.setUserColorList(value);
@@ -781,6 +794,10 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
         onEditComplete: (value) {
           setState(() {
             model.outLineColor.set(value);
+            // 색상을 선택하면, 자동으로 두께를 잡아준다.
+            if (model.outLineWidth.value == 0) {
+              model.outLineWidth.set(5);
+            }
           });
           _invalidateContents();
         },
@@ -849,16 +866,25 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
         outLineWidth: model.shadowBlur.value,
         opacity: model.shadowIntensity.value,
         controller: shadowCon,
+        maxOutLine: 20,
         //glassFill: model.glassFill.value,
         favorateColorPick: (value) {
           setState(() {
             model.shadowColor.set(value);
+            // 색상을 선택하면 자동으로 두께를 잡아준다.
+            if (model.shadowBlur.value == 0) {
+              model.shadowBlur.set(10);
+            }
           });
           _invalidateContents();
         },
         onColorChangedEnd: (value) {
           setState(() {
             model.shadowColor.set(value);
+            // 색상을 선택하면 자동으로 두께를 잡아준다.
+            if (model.shadowBlur.value == 0) {
+              model.shadowBlur.set(10);
+            }
           });
           _invalidateContents();
           currentUser.setUserColorList(value);
@@ -866,6 +892,10 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
         onEditComplete: (value) {
           setState(() {
             model.shadowColor.set(value);
+            // 색상을 선택하면 자동으로 두께를 잡아준다.
+            if (model.shadowBlur.value == 0) {
+              model.shadowBlur.set(10);
+            }
           });
           _invalidateContents();
         },
@@ -888,6 +918,7 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
 
   Widget aniExpander(ContentsModel model) {
     return aniModel.expandArea(
+        align: AlignmentDirectional.centerStart,
         child: aniRow(context, model),
         setStateFunction: () {
           setState(() {
@@ -895,9 +926,9 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
             aniModel.toggleSelected();
           });
         },
-        titleSize: 150,
+        titleSize: 120,
         titleLineWidget: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextButton(
               child: Text(textAniTypeToString(model.aniType.value)),
@@ -914,9 +945,6 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
                 _invalidateContents();
               },
             ),
-            SizedBox(
-              width: 20,
-            ),
           ],
         ));
   }
@@ -924,34 +952,60 @@ class ContentsPropertyState extends State<ContentsProperty> with SingleTickerPro
   Widget aniRow(BuildContext context, ContentsModel model) {
     return Padding(
         padding: const EdgeInsets.only(
-          left: 22,
+          left: 0,
+          right: 22,
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            marquee(model),
+            SizedBox(width: 250, child: tickerSide(model)),
+            doubleSlider(
+              title: MyStrings.speed,
+              value: model.anyDuration.value,
+              onChanged: (val) {
+                setState(() {
+                  model.anyDuration.set(val);
+                  _invalidateContents();
+                });
+              },
+              onChangeStart: (val) {},
+              min: 0,
+              max: 100,
+            ),
           ],
         ));
   }
 
-  Widget marquee(ContentsModel model) {
+  Widget tickerSide(ContentsModel model) {
     return TextButton(
       onPressed: () {
         setState(() {
-          model.aniType.set(TextAniType.marquee);
+          model.aniType.set(TextAniType.tickerSide);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
         });
         _invalidateContents();
       },
-      child: Container(),
-      // child: TextScroll(
-      //   'marquee',
-      //   mode: TextScrollMode.bouncing,
-      //   numberOfReps: 5,
-      //   delayBefore: Duration(milliseconds: 2000),
-      //   pauseBetween: Duration(milliseconds: 1000),
-      //   velocity: Velocity(pixelsPerSecond: Offset(100, 0)),
-      //   style: TextStyle(decoration: TextDecoration.underline),
-      //   textAlign: TextAlign.right,
-      //   selectable: true,
+      child: TextScroll(
+        "${MyStrings.tickerSide}                              ",
+        textAlign: TextAlign.left,
+        mode: TextScrollMode.endless,
+        velocity: Velocity(pixelsPerSecond: Offset(model.anyDuration.value, 0)),
+        // delayBefore: Duration(milliseconds: 500),
+        // numberOfReps: 5,
+        // pauseBetween: Duration(milliseconds: 50),
+        // style: TextStyle(color: Colors.green),
+        // textAlign: TextAlign.right,
+        // selectable: true,
+      ),
+      // child: TickerText(
+      //   speed: 20,
+      //   scrollDirection: Axis.horizontal,
+      //   startPauseDuration: const Duration(milliseconds: 500),
+      //   endPauseDuration: const Duration(seconds: 2),
+      //   returnCurve: Curves.easeIn,
+      //   child: Text("${MyStrings.tickerSide}.........................."),
       // ),
     );
   }

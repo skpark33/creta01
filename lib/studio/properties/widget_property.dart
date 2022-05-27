@@ -55,6 +55,7 @@ class ExapandableModel {
     double titleSize = 120,
     Widget? titleLineWidget,
     bool open = false,
+    AlignmentDirectional align = AlignmentDirectional.center,
   }) {
     if (open) {
       if (closeOthers != null) {
@@ -90,6 +91,7 @@ class ExapandableModel {
           ),
           isSelected
               ? AnimatedContainer(
+                  alignment: align,
                   duration: Duration(milliseconds: 500),
                   height: height,
                   //alignment: Alignment.center,

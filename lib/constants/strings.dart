@@ -231,7 +231,11 @@ class MyStrings {
   static String outline = Locale.isKr() ? '외곽선' : "Outline";
   static String outlineWidth = Locale.isKr() ? '두께' : "Outline Width";
 
-  static String shadow = Locale.isKr() ? '네온' : "Neon";
-  static String shadowBlur = Locale.isKr() ? '네온 두께' : "Shadow Width";
-  static String shadowIntensity = Locale.isKr() ? '네온 강도' : "Shadow Intensity";
+  static String shadow = Locale.isKr() ? '그림자' : "Neon";
+  static String shadowBlur = Locale.isKr() ? '그림자 두께' : "Shadow Width";
+  static String shadowIntensity = Locale.isKr() ? '그림자 강도' : "Shadow Intensity";
+
+  static String tickerSide = Locale.isKr() ? '옆으로 흐르는 문자열' : "sideways flowing string";
+  static String tickerUpDown = Locale.isKr() ? '상하로 흐르는 문자열' : "updown flowing string";
+  static String speed = Locale.isKr() ? '속도' : "speed";
 }

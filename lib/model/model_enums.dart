@@ -497,7 +497,7 @@ TextLine stringToTextDecoration(String value) {
 
 enum TextAniType {
   none,
-  marquee,
+  tickerSide,
   rotate,
   fade,
   typer,
@@ -513,7 +513,7 @@ int textAniTypeToInt(TextAniType value) {
   switch (value) {
     case TextAniType.none:
       return 0;
-    case TextAniType.marquee:
+    case TextAniType.tickerSide:
       return 1;
     case TextAniType.rotate:
       return 2;
@@ -541,7 +541,7 @@ TextAniType intToTextAniType(int t) {
     case 0:
       return TextAniType.none;
     case 1:
-      return TextAniType.marquee;
+      return TextAniType.tickerSide;
     case 2:
       return TextAniType.rotate;
     case 3:
@@ -568,8 +568,8 @@ String textAniTypeToString(TextAniType value) {
   switch (value) {
     case TextAniType.none:
       return "none";
-    case TextAniType.marquee:
-      return "marquee";
+    case TextAniType.tickerSide:
+      return MyStrings.tickerSide;
     case TextAniType.rotate:
       return "rotate";
     case TextAniType.fade:

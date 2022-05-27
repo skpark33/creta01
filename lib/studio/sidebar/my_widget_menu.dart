@@ -440,9 +440,7 @@ class MyMenuStickState extends State<MyMenuStick> {
     //     "사랑 그깟 거 따위 내 눈에 눈물 한 방울 어림없지"
     //     "너의 하찮은 말에 미소나 지을 바엔";
     int textSize = getStringSize(initialText);
-    String name = textSize > 40
-        ? initialText.substring(0, (initialText.length / (textSize / 40).ceil()).round())
-        : initialText;
+    String name = shortenText(initialText);
     ContentsModel model = ContentsModel(acc.accModel.mid,
         name: name, mime: 'text/', bytes: textSize, url: initialText);
 
